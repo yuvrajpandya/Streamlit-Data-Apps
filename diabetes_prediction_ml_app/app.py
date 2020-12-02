@@ -35,12 +35,8 @@ def main():
 	else:
 		st.subheader("About")
 		st.subheader("Developed by Yuvraj Pandya")
-		# st.markdown("![Alt Text](https://github.com/yuvrajpandya/Streamlit-Data-Apps/blob/master/linkedin-icon.png)")
-		# st.markdown("LinkedIn: "+ "https://www.linkedin.com/in/yuvraj-pandya")
-		# st.markdown("https://streamlit.io")
-
-		# html = f"<a href='https://www.linkedin.com/in/yuvraj-pandya'><img src='C:/Users/yuvra/Desktop/Data Science/Projects/Streamlit Data Apps/diabetes_prediction_ml_app/images/linkedin-icon.png'></a>"
-		# st.markdown(html, unsafe_allow_html=True)
+		html = f"<a href='https://www.linkedin.com/in/yuvraj-pandya'><img src='https://github.com/yuvrajpandya/Streamlit-Data-Apps/raw/master/diabetes_prediction_ml_app/images/linkedin-icon.png'/></a>"
+		st.markdown(html, unsafe_allow_html=True)
 
 if __name__ == '__main__':
 	main()
