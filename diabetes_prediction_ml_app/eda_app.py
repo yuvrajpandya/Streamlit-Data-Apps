@@ -44,14 +44,11 @@ def run_eda_app():
 		col1,col2 = st.beta_columns([2,1])
 		with col1:
 			with st.beta_expander("Dist Plot of Gender"):
-				# fig = plt.figure()
-				# sns.countplot(df['Gender'])
-				# st.pyplot(fig)
 
 				gen_df = df['Gender'].value_counts().to_frame()
 				gen_df = gen_df.reset_index()
 				gen_df.columns = ['Gender Type','Counts']
-				# st.dataframe(gen_df)
+
 				p01 = px.pie(gen_df,names='Gender Type',values='Counts')
 				st.plotly_chart(p01,use_container_width=True)
 
@@ -60,25 +57,20 @@ def run_eda_app():
 				sns.countplot(df['class'])
 				st.pyplot(fig)
 
+			with st.beta_expander("Gender Distribution across Classes"):
+				# st.dataframe(df['class'].value_counts())
+				gender_classes = df.groupby(['Gender', 'class'])['Age'].count().reset_index().rename(columns={'Age':'Count', 'class':'Class'})
 
-
-
+				fig = px.sunburst(gender_classes, path=['Gender', 'Class'], values='Count', color='Class',
+                 color_discrete_map={'Positive':'red', 'Negative':'lightgreen'})
+				st.plotly_chart(fig, use_container_width=True)
 
 		with col2:
 			with st.beta_expander("Gender Distribution"):
 				st.dataframe(df['Gender'].value_counts())
 
-			with st.beta_expander("Class Distribution"):
-				st.dataframe(df['class'].value_counts())
-			
 
 		with st.beta_expander("Frequency Dist Plot of Age"):
-			# fig,ax = plt.subplots()
-			# ax.bar(freq_df['Age'],freq_df['count'])
-			# plt.ylabel('Counts')
-			# plt.title('Frequency Count of Age')
-			# plt.xticks(rotation=45)
-			# st.pyplot(fig)
 
 			p = px.bar(freq_df,x='Age',y='count')
 			st.plotly_chart(p)
@@ -87,10 +79,7 @@ def run_eda_app():
 			st.plotly_chart(p2)
 
 		with st.beta_expander("Outlier Detection Plot"):
-			# outlier_df = 
 			fig = plt.figure()
-			sns.boxplot(df['Age'])
-			st.pyplot(fig)
 
 			p3 = px.box(df,x='Age',color='Gender')
 			st.plotly_chart(p3)
@@ -100,16 +89,3 @@ def run_eda_app():
 			fig = plt.figure(figsize=(20,10))
 			sns.heatmap(corr_matrix,annot=True)
 			st.pyplot(fig)
-
-			p3 = px.imshow(corr_matrix)
-			st.plotly_chart(p3)
-
-
-	
-
-
-
-
-
-
-

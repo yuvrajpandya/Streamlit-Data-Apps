@@ -2,37 +2,39 @@ import streamlit as st
 import joblib
 import os
 import numpy as np
+import pandas as pd
 
 attrib_info = """
 #### Attribute Information:
     - Age 1.20-65
     - Sex 1. Male, 2.Female
-    - Polyuria 1.Yes, 2.No.
-    - Polydipsia 1.Yes, 2.No.
-    - sudden weight loss 1.Yes, 2.No.
-    - weakness 1.Yes, 2.No.
-    - Polyphagia 1.Yes, 2.No.
-    - Genital thrush 1.Yes, 2.No.
-    - visual blurring 1.Yes, 2.No.
-    - Itching 1.Yes, 2.No.
-    - Irritability 1.Yes, 2.No.
-    - delayed healing 1.Yes, 2.No.
-    - partial paresis 1.Yes, 2.No.
-    - muscle stiness 1.Yes, 2.No.
-    - Alopecia 1.Yes, 2.No.
-    - Obesity 1.Yes, 2.No.
-    - Class 1.Positive, 2.Negative.
+    - Polyuria 1.No, 2.Yes.
+    - Polydipsia 1.No, 2.Yes.
+    - sudden weight loss 1.No, 2.Yes.
+    - weakness 1.No, 2.Yes.
+    - Polyphagia 1.No, 2.Yes.
+    - Genital thrush 1.No, 2.Yes.
+    - visual blurring 1.No, 2.Yes.
+    - Itching 1.No, 2.Yes.
+    - Irritability 1.No, 2.Yes.
+    - delayed healing 1.No, 2.Yes.
+    - partial paresis 1.No, 2.Yes.
+    - muscle stiffness 1.No, 2.Yes.
+    - Alopecia 1.No, 2.Yes.
+    - Obesity 1.No, 2.Yes.
+    - Class 1.Negative, 2.Positive.
 
 """
 label_dict = {"No":1,"Yes":2}
 gender_map = {"Male":1,"Female":2}
 target_label_map = {"Negative":0,"Positive":1}
 
-['age', 'gender', 'polyuria', 'polydipsia', 'sudden_weight_loss',
-       'weakness', 'polyphagia', 'genital_thrush', 'visual_blurring',
-       'itching', 'irritability', 'delayed_healing', 'partial_paresis',
-       'muscle_stiffness', 'alopecia', 'obesity', 'class']
+# features = ['age', 'gender', 'polyuria', 'polydipsia', 'sudden_weight_loss',
+#        'weakness', 'polyphagia', 'genital_thrush', 'visual_blurring',
+#        'itching', 'irritability', 'delayed_healing', 'partial_paresis',
+#        'muscle_stiffness', 'alopecia', 'obesity']
 
+features = ['age', 'gender', 'polyuria', 'polydipsia', 's', 'w', 'p', 'g', 'v', 'i', 'i', 'd', 'p', 'm', 'a', 'b']
 
 def get_fvalue(val):
 	feature_dict = {"No":1,"Yes":2}
@@ -57,6 +59,7 @@ def load_model(model_file):
 def run_ml_app():
 	st.subheader("Machine Learning Section")
 	loaded_model = load_model("models/diabetes_logistics_reg_predictor.pkl")
+	loaded_preprocessor = load_model("models/diabetes_data_preprocessor.pkl") 
 
 	with st.beta_expander("Attributes Info"):
 		st.markdown(attrib_info,unsafe_allow_html=True)
@@ -86,46 +89,46 @@ def run_ml_app():
 		obesity = st.select_slider("obesity",["No","Yes"]) 
 
 	with st.beta_expander("Your Selected Options"):
-		result = {'age':age,
-		'gender':gender,
-		'polyuria':polyuria,
-		'polydipsia':polydipsia,
-		'sudden_weight_loss':sudden_weight_loss,
-		'weakness':weakness,
-		'polyphagia':polyphagia,
-		'genital_thrush':genital_thrush,
-		'visual_blurring':visual_blurring,
-		'itching':itching,
-		'irritability':irritability,
-		'delayed_healing':delayed_healing,
-		'partial_paresis':partial_paresis,
-		'muscle_stiffness':muscle_stiffness,
-		'alopecia':alopecia,
-		'obesity':obesity}
+		result = {
+		'Age':[age],
+		'Gender':[gender],
+		'Polyuria':[polyuria],
+		'Polydipsia':[polydipsia],
+		'Sudden_weight_loss':[sudden_weight_loss],
+		'Weakness':[weakness],
+		'Polyphagia':[polyphagia],
+		'Genital_thrush':[genital_thrush],
+		'Visual_blurring':[visual_blurring],
+		'Itching':[itching],
+		'Irritability':[irritability],
+		'Delayed_healing':[delayed_healing],
+		'Partial_paresis':[partial_paresis],
+		'Muscle_stiffness':[muscle_stiffness],
+		'Alopecia':[alopecia],
+		'Obesity':[obesity]}
 		st.write(result)
-		encoded_result = []
-		for i in result.values():
-			if type(i) == int:
-				encoded_result.append(i)
-			elif i in ["Female","Male"]:
-				res = get_value(i,gender_map)
-				encoded_result.append(res)
-			else:
-				encoded_result.append(get_fvalue(i))
 
 
-		# st.write(encoded_result)
 	with st.beta_expander("Prediction Results"):
-		single_sample = np.array(encoded_result).reshape(1,-1)
-
+		# receive & transform the input
+		st.write('Transformed input')
+		df_result = pd.DataFrame(result)
+		single_sample = loaded_preprocessor.transform(df_result) #load the data preprocessor to transform the user input
 		st.write(single_sample)
+
+		# predict the outcome
 		prediction = loaded_model.predict(single_sample)
 		pred_prob = loaded_model.predict_proba(single_sample)
-		st.write(prediction)
+		# st.write(prediction)
+
+		# display the results with probabilities of each outcome
+		prediction_description = "Diabetes Risk - " + format(prediction[0]) + " | See Prediction Probability Score for the likelihood"
 		if prediction == "Positive":
-			st.warning("Positive Risk-{}".format(prediction[0]))
+			# st.warning("Patient's prediction{}".format(prediction[0]))
+			st.warning(prediction_description)
 		else:
-			st.success("Negative Risk-{}".format(prediction[0]))
+			st.success(prediction_description)
+			
 		pred_probability_score = {"Negative DM":pred_prob[0][0]*100,"Positive DM":pred_prob[0][1]*100}
 		st.subheader("Prediction Probability Score")
 		st.json(pred_probability_score)

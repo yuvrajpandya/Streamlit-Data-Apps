@@ -20,14 +20,34 @@ def main():
 		st.subheader("Home")
 		st.write("""
 			### Early Stage Diabetes Risk Predictor App
-			This dataset contains the sign and symptoms data of newly diabetic or would be diabetic patient.
+			The app's main objective is to showcase fast prototyping of a data app to present the
+			explorative analysis & how model prediction works in a real time. 
+
 			#### Datasource
+				- This dataset contains the sign and symptoms data of newly diabetic or would be diabetic patient.
 				- https://archive.ics.uci.edu/ml/datasets/Early+stage+diabetes+risk+prediction+dataset.
 			#### App Content
 				- EDA Section: Exploratory Data Analysis of Data
 				- ML Section: ML Predictor App
 
+			#### Machine Learning model
+				- Since it is a two-class classification problem, I have used a simple LogisticRegression model
+				- Multiple models such as RandomForestClassifier & SVM could be used which might give better scores
 			""")
+
+		st.subheader("Findings")
+		st.write("""
+				During the EDA and testing phase of the model, it is found that top 3 factors for determining
+				the presence of diabetes in patient are Polyuria, Polydipsia & Gender. Using SHAP values, feature
+				importance can be carried out for explanation of the model.
+
+				More on what is Polyuria (frequent large amounts of urine due to excessive levels of sugar)
+				& Polydipsia (excessive thirst):
+				- https://www.jdrf.org/t1d-resources/about/symptoms/frequent-urination/
+				- https://www.jdrf.org/t1d-resources/about/symptoms/extreme-thirst/
+		 """)
+
+
 	elif choice == "EDA":
 		run_eda_app()
 	elif choice == "ML":
