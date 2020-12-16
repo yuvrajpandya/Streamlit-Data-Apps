@@ -55,7 +55,7 @@ def main():
 	else:
 		st.subheader("About")
 		st.subheader("Developed by Yuvraj Pandya")
-		html = f"<a href='https://www.linkedin.com/in/yuvraj-pandya'><img src='https://github.com/yuvrajpandya/Streamlit-Data-Apps/raw/master/diabetes_prediction_ml_app/images/linkedin-icon.png'/></a>"
+		html = f"<a href='https://www.linkedin.com/in/yuvraj-pandya'><img src='https://github.com/yuvrajpandya/ScikitLearn/blob/master/linkedin-icon.png'/></a>"
 		st.markdown(html, unsafe_allow_html=True)
 
 if __name__ == '__main__':
