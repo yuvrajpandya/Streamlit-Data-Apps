@@ -53,7 +53,6 @@ def main():
 	elif choice == "ML":
 		run_ml_app()
 	else:
-		st.subheader("About")
 		st.subheader("Developed by Yuvraj Pandya")
 		html = f"<a href='https://www.linkedin.com/in/yuvraj-pandya'><img src='https://github.com/yuvrajpandya/ScikitLearn/raw/master/linkedin-icon.png'/></a>"
 		st.markdown(html, unsafe_allow_html=True)
